@@ -1,0 +1,93 @@
+
+The normal Java enforcer rule out of the box is toolchain unaware and is really only usefule for checking what java version is available via the users shell environment.
+
+This rule requires a valid toolchains.xml in your ~/.m2 folder e.g.
+
+<toolchains>
+    <toolchain>
+       <type>jdk</type>
+       <provides>
+           <version>1.5</version>
+           <vendor>sun</vendor>
+           <id>1.5</id>
+       </provides>
+       <configuration>
+          <jdkHome>/opt/shared/java/jdk1.5</jdkHome>
+       </configuration>
+    </toolchain>
+    <toolchain>
+       <type>jdk</type>
+       <provides>
+           <version>1.6</version>
+           <vendor>sun</vendor>
+           <id>1.6</id>
+       </provides>
+       <configuration>
+          <jdkHome>/opt/shared/java/jdk1.6</jdkHome>
+       </configuration>
+    </toolchain>
+</toolchains>
+
+
+Sample usage in a project pom.xml is illustrated below
+
+  ...
+  <build>
+      <plugins>
+          <plugin>
+            <artifactId>maven-toolchains-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>toolchain</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>toolchain</goal>
+                </goals>
+                <configuration>
+                  <toolchains>
+                    <jdk>
+                      <version>1.6</version>
+                    </jdk>
+                  </toolchains>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+              <artifactId>maven-enforcer-plugin</artifactId>
+                  <dependencies>              
+                    <dependency>
+				      <groupId>ie.pmoloney</groupId>
+				      <artifactId>maven-enforcer-toolchain-rules</artifactId>
+				      <version>1.0.1-SNAPSHOT</version> 
+                    </dependency>
+                  </dependencies>              
+                  <executions>
+                      <execution>
+                         <id>enforce-versions</id>
+                         <phase>validate</phase>
+                         <goals>
+                           <goal>display-info</goal>
+                           <goal>enforce</goal>
+                         </goals>
+                         <configuration>
+                           <rules>
+                               <!-- Since this rule is in the org.apache.maven.plugins.enforcer package one doesn't require
+                               the implementation attribute i.e.
+                               
+                               implementation="org.apache.maven.plugins.enforcer.RuleJavaVersionToolchainAware"-->
+                                                          
+                               <ruleJavaVersionToolchainAware> 
+                                   <version>[1.6.0-30,)</version>
+                               </ruleJavaVersionToolchainAware>
+                           </rules>
+                         </configuration>
+                      </execution>
+                  </executions>
+          </plugin>
+      </plugins>
+  </build>
+
+  ...
+  
+As an aside I typically create a generic symlink e.g. /opt/shared/java/jdk1.6 pointing at the real jdk install opt/shared/java/jdk1.6.0_32     
