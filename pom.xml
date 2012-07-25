@@ -3,12 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ie.pmoloney</groupId>
+    <groupId>com.github.paulmoloney</groupId>
     <artifactId>top-level-parent-pom</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
-    <!--groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version-->
+    <version>1.0.3-SNAPSHOT</version>
   </parent>  
     
   <artifactId>maven-enforcer-toolchain-rules</artifactId>
@@ -191,7 +188,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-toolchains-plugin</artifactId>
-            <!--version>1.0</version-->
             <executions>
               <execution>
                 <id>toolchain</id>
@@ -236,7 +232,38 @@
           </plugin>
       </plugins>
   </build>
+
+  <inceptionYear>2012</inceptionYear>
+
+  <url>https://paulmoloney.github.com/maven-enforcer-toolchain-rules</url>
   
+  <issueManagement>
+      <system>github</system>
+      <url><![CDATA[http://github.com/paulmoloney/maven-enforcer-toolchain-rules/issues]]></url>
+  </issueManagement>
+      
+  <scm>
+      <connection>scm:git:git://github.com/paulmoloney/maven-enforcer-toolchain-rules.git</connection>
+      <developerConnection>scm:git:git@github.com:paulmoloney/maven-enforcer-toolchain-rules.git</developerConnection>
+      <url>https://github.com/paulmoloney/maven-enforcer-toolchain-rules/tree/master/</url>
+  </scm>
+    
+  <distributionManagement>
+      <site>
+          <id>site</id>
+            <!--url>${site_deploy_url}/${siteGroupId}/${project.artifactId}/${project.version}</url-->
+            <url>gitsite:git://github.com/paulmoloney/maven-enforcer-toolchain-rules.git</url>
+      </site>
+      <!--repository>
+          <id>releases</id>
+          <url>${distro_release_url}</url>
+      </repository>
+      <snapshotRepository>
+          <id>snapshots</id>
+          <url>${distro_snapshot_url}</url>
+      </snapshotRepository-->
+    </distributionManagement>
+    
   <profiles>
         <profile>
             <id>m2e</id>
