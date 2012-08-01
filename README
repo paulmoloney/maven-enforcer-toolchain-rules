@@ -1,5 +1,5 @@
 
-The normal Java enforcer rule out of the box is toolchain unaware and is really only usefule for checking what java version is available via the users shell environment.
+The normal Java enforcer rule out of the box is toolchain unaware and is really only usefull for checking what java version is available via the users shell environment. It does not check that the java compiler version is sane or matches the java command version.
 
 This rule requires a valid toolchains.xml in your ~/.m2 folder e.g.
 
@@ -91,3 +91,4 @@ Sample usage in a project pom.xml is illustrated below
   ...
   
 As an aside I typically create a generic symlink e.g. /opt/shared/java/jdk1.6 pointing at the real jdk install opt/shared/java/jdk1.6.0_32     
+
