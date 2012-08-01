@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.github.paulmoloney</groupId>
     <artifactId>top-level-parent-pom</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.4</version>
   </parent>  
     
   <artifactId>maven-enforcer-toolchain-rules</artifactId>
@@ -15,6 +15,13 @@
   <name>simple-maven</name>  
 
   <properties>
+    <java_lang_level>1.5</java_lang_level>
+    <project_animal_java_sniffer_source_level>java15</project_animal_java_sniffer_source_level>
+    <jdkName>${jdk5Name}</jdkName>
+    <minJdk>${java_lang_level}.0-22</minJdk>
+    <maxJdk></maxJdk>
+    <requireJavaVersion>[${minJdk},)</requireJavaVersion>
+            
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.version>3.0</maven.version>
     <maven.plugin.plugin.version>3.1</maven.plugin.plugin.version>
