@@ -8,7 +8,7 @@
   </parent>  
     
   <artifactId>maven-enforcer-toolchain-rules</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>simple-maven</name>  
@@ -252,7 +252,7 @@
       <connection>scm:git:git://github.com/paulmoloney/maven-enforcer-toolchain-rules.git</connection>
       <developerConnection>scm:git:git@github.com:paulmoloney/maven-enforcer-toolchain-rules.git</developerConnection>
       <url>https://github.com/paulmoloney/maven-enforcer-toolchain-rules/tree/master/</url>
-    <tag>maven-enforcer-toolchain-rules-1.0.1</tag>
+    <tag>HEAD</tag>
   </scm>
     
   <distributionManagement>
