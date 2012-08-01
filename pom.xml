@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -11,16 +12,20 @@
   <version>1.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>simple-maven</name>  
+  <name>maven-enforcer-toolchain-rules</name>
+  <description>Enforce Java Compiler version based upon toolchain.xml configuration</description>  
 
   <properties>
     <java_lang_level>1.5</java_lang_level>
     <project_animal_java_sniffer_source_level>java15</project_animal_java_sniffer_source_level>
     <jdkName>${jdk5Name}</jdkName>
     <minJdk>${java_lang_level}.0-22</minJdk>
-    <maxJdk />
+    <maxJdk></maxJdk>
     <requireJavaVersion>[${minJdk},)</requireJavaVersion>
-            
+    <minMaven>3.0.4</minMaven>
+    <maxMaven></maxMaven>
+    <requireMavenVersion>[${minMaven},)</requireMavenVersion>
+                    
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.version>3.0</maven.version>
     <maven.plugin.plugin.version>3.1</maven.plugin.plugin.version>
@@ -252,23 +257,13 @@
       <connection>scm:git:git://github.com/paulmoloney/maven-enforcer-toolchain-rules.git</connection>
       <developerConnection>scm:git:git@github.com:paulmoloney/maven-enforcer-toolchain-rules.git</developerConnection>
       <url>https://github.com/paulmoloney/maven-enforcer-toolchain-rules/tree/master/</url>
-    <tag>HEAD</tag>
   </scm>
     
   <distributionManagement>
       <site>
           <id>site</id>
-            <!--url>${site_deploy_url}/${siteGroupId}/${project.artifactId}/${project.version}</url-->
             <url>gitsite:git://github.com/paulmoloney/maven-enforcer-toolchain-rules.git</url>
       </site>
-      <!--repository>
-          <id>releases</id>
-          <url>${distro_release_url}</url>
-      </repository>
-      <snapshotRepository>
-          <id>snapshots</id>
-          <url>${distro_snapshot_url}</url>
-      </snapshotRepository-->
     </distributionManagement>
     
   <profiles>
