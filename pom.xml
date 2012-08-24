@@ -208,7 +208,7 @@
                 <configuration>
                   <toolchains>
                     <jdk>
-                      <version>[1.5,)</version>
+                      <version>[${java_lang_level},)</version>
                     </jdk>
                   </toolchains>
                 </configuration>
@@ -233,7 +233,7 @@
                                 <version>[${maven.version},)</version>
                              </requireMavenVersion>
                              <requireJavaVersion>
-                                <version>[1.5,)</version>
+                                <version>[${java_lang_level},)</version>
                              </requireJavaVersion>
                            </rules>
                          </configuration>

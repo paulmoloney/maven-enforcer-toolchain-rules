@@ -72,10 +72,10 @@ Sample usage in a project pom.xml is illustrated below
                          </goals>
                          <configuration>
                            <rules>
-                               <!-- Since this rule is in the org.apache.maven.plugins.enforcer package one doesn't require
+                               <!-- Since this rule is in the com.github.paulmoloney.maven.plugins.enforcer package one doesn't require
                                the implementation attribute i.e.
                                
-                               implementation="org.apache.maven.plugins.enforcer.RuleJavaVersionToolchainAware"-->
+                               implementation="com.github.paulmoloney.maven.plugins.enforcer.RuleJavaVersionToolchainAware"-->
                                                           
                                <ruleJavaVersionToolchainAware> 
                                    <version>[1.6.0-30,)</version>
