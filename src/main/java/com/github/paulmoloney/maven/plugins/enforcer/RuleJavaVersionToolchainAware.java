@@ -162,7 +162,7 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
 	        + " Build: " + detectedJdkVersion.getBuildNumber() + "Qualifier: " + detectedJdkVersion.getQualifier() );
 	
 	    log.debug("Tool " + executable + ", provides: " + detectedJdkVersion + ", require: " + version);
-	    enforceVersion( helper.getLog(), "JDK", version, detectedJdkVersion );
+	    enforceVersion( helper.getLog(), "JDK", getVersion()tectedJdkVersion );
     } 
 
 	/**

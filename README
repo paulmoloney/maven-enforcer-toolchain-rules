@@ -1,5 +1,7 @@
 
-The normal Java enforcer rule out of the box is toolchain unaware and is really only usefull for checking what java version is available via the users shell environment. It does not check that the java compiler version is sane or matches the java command version.
+The normal Java enforcer rule out of the box is toolchain unaware and is really only usefull for checking what java version
+is available via the users shell environment. It does not check that the java compiler version is sane or matches the java
+command version.
 
 This rule requires a valid toolchains.xml in your ~/.m2 folder e.g.
 
@@ -36,6 +38,7 @@ Sample usage in a project pom.xml is illustrated below
       <plugins>
           <plugin>
             <artifactId>maven-toolchains-plugin</artifactId>
+            <version>${toolchains_plugin_version}</version>
             <executions>
               <execution>
                 <id>toolchain</id>
@@ -55,13 +58,14 @@ Sample usage in a project pom.xml is illustrated below
           </plugin>
           <plugin>
               <artifactId>maven-enforcer-plugin</artifactId>
-                  <dependencies>              
+              <version>${enforcer_plugin_version}</version>
+                  <dependencies>
                     <dependency>
-				      <groupId>ie.pmoloney</groupId>
-				      <artifactId>maven-enforcer-toolchain-rules</artifactId>
-				      <version>1.0.1-SNAPSHOT</version> 
+                        <groupId>ie.pmoloney</groupId>
+                        <artifactId>maven-enforcer-toolchain-rules</artifactId>
+                        <version>1.0.1</version> 
                     </dependency>
-                  </dependencies>              
+                  </dependencies>
                   <executions>
                       <execution>
                          <id>enforce-versions</id>
@@ -72,11 +76,9 @@ Sample usage in a project pom.xml is illustrated below
                          </goals>
                          <configuration>
                            <rules>
-                               <!-- Since this rule is in the com.github.paulmoloney.maven.plugins.enforcer package one doesn't require
-                               the implementation attribute i.e.
-                               
-                               implementation="com.github.paulmoloney.maven.plugins.enforcer.RuleJavaVersionToolchainAware"-->
-                                                          
+                               <!-- Since this rule is not in the org.apache.maven.plugins.enforcer
+                                    package one requires the implementation attribute -->
+                               <implementation="com.github.paulmoloney.maven.plugins.enforcer.RuleJavaVersionToolchainAware">
                                <ruleJavaVersionToolchainAware> 
                                    <version>[1.6.0-30,)</version>
                                </ruleJavaVersionToolchainAware>
@@ -89,6 +91,6 @@ Sample usage in a project pom.xml is illustrated below
   </build>
 
   ...
-  
-As an aside I typically create a generic symlink e.g. /opt/shared/java/jdk1.6 pointing at the real jdk install opt/shared/java/jdk1.6.0_32     
+
+As an aside I typically create a generic symlink e.g. /opt/shared/java/jdk1.6 pointing at the real jdk located in /opt/shared/java/jdk1.6.0_34
 
