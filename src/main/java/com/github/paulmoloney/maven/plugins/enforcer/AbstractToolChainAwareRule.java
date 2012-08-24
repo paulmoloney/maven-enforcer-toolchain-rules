@@ -52,7 +52,7 @@ public abstract class AbstractToolChainAwareRule extends AbstractVersionEnforcer
     private ToolchainManager toolchainManager;
 
     private MavenSession session;
-	
+
     protected String executable;
 
     //@Parameter( defaultValue = "${project.build.outputDirectory}", required = true, readonly = true )
@@ -63,19 +63,19 @@ public abstract class AbstractToolChainAwareRule extends AbstractVersionEnforcer
      */
     //@Parameter( defaultValue = "${basedir}", required = true, readonly = true )
     private File basedir; 
-    
+
     /**
      * The target directory of the compiler if fork is true.
      */
     @Parameter( defaultValue = "${project.build.directory}", required = true, readonly = true )
     private File buildDirectory;
-    
+
     protected void init(EnforcerRuleHelper helper) throws EnforcerRuleException, MojoExecutionException
     {
     	final String version = getVersion(); 
     	if (null == version || "".equals(version.trim()))
     	{
-    		throw new MojoExecutionException("Version parameter was not supplied for rule usage");    		
+    		throw new MojoExecutionException("Version parameter was not supplied for rule usage");
     	}
     	try
     	{
@@ -99,7 +99,7 @@ public abstract class AbstractToolChainAwareRule extends AbstractVersionEnforcer
 	    catch (ComponentLookupException e)
 	    {
 	        throw new MojoExecutionException ("Unable to retrieve component", e);
-	    }    	
+	    }
     }
 
     //TODO remove the part with ToolchainManager lookup once we depend on
@@ -124,25 +124,25 @@ public abstract class AbstractToolChainAwareRule extends AbstractVersionEnforcer
 	    else
 	    {
 	    	helper.getLog().debug("No toolchain found for type " + type);
-	    }	    
+	    }
 	    return tc;
     }
-    
+
     protected File getOutputDirectory()
     {
         return outputDirectory;
     }
-    
+
     protected File getBaseDirectory()
     {
         return basedir;
-    }    
+    }
 
     protected File getBuildDirectory()
     {
         return buildDirectory;
     }
-    
+
     private static final String LS = System.getProperty( "line.separator" );
 
     /**
@@ -184,15 +184,15 @@ public abstract class AbstractToolChainAwareRule extends AbstractVersionEnforcer
 
             sb.append( compilerError ).append( LS );
         }
-        
+
         return sb.toString();
     }
-    
+
     protected String getExecutableExtension()
     {
     	return ( Os.isFamily( Os.FAMILY_WINDOWS ) ? ".exe" : "" );
     }
-    
+
     protected MavenSession getSession()
     {
     	return session;
@@ -210,7 +210,7 @@ public abstract class AbstractToolChainAwareRule extends AbstractVersionEnforcer
      */
     protected String findToolExecutable(String tool, Log log, String sysProperty, String[] subDirs1, String [] envArgs, String [] subDirs2)
     {
-    	log.warn("Falling back to env lookup for specified tool");    	
+    	log.warn("Falling back to env lookup for specified tool");
         Properties env = new Properties();
         env.putAll(getSession().getSystemProperties());
         env.putAll(getSession().getUserProperties());
@@ -279,7 +279,7 @@ public abstract class AbstractToolChainAwareRule extends AbstractVersionEnforcer
 	protected File getBasedir() {
 		return basedir;
 	}
-   
+
     /**
      * Construct a new see {ToolchainManager}
      * @param type the toolchain type
@@ -287,10 +287,10 @@ public abstract class AbstractToolChainAwareRule extends AbstractVersionEnforcer
      * @param project the maven project
      * @return ToolchainManager or null
      * @throws MogoExecutionException
-     * 
+     *
     private ToolchainManager createToolChainManager(String type, Log log, MavenProject project)
     {
-    	//this breaks later with a life-cycle exception	    	
+    	//this breaks later with a life-cycle exception
     	File toolchainsFile = null;
     	try {
     		//Maven 3.0-betaX?
@@ -338,8 +338,7 @@ public abstract class AbstractToolChainAwareRule extends AbstractVersionEnforcer
 	                break;
 	            }
 	        }
-	    }    		
+	    }
     }*/
-    
-    
+
 }

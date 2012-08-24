@@ -50,12 +50,12 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
 public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
     @Parameter( property = "maven.compiler.compilerId", defaultValue = "javac" )
     private String compilerId;
-    
+
     /*
      * From plexus
      */
     private CompilerManager compilerManager;
-    
+
     @Parameter(property = "maven.compiler.compilerArgument", defaultValue = "-version" )
     private String compilerArgument;
 
@@ -64,7 +64,7 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
      */
     @Parameter (defaultValue = "true")
     private boolean isFallBackAllowed;
-    
+
 	/** 
 	* This particular rule determines if the specified Java compiler version referenced in the toolchains.xml is an appropriate version
 	* @see org.apache.maven.enforcer.rule.api.EnforcerRule&#execute(org.apache.maven.enforcer.rule.api.EnforcerRuleHelper)
@@ -88,7 +88,7 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
     	    if (null == compilerArgument || "".equals(compilerArgument))
     	    {
     	    	compilerArgument = "-version";
-    	    }    	    
+    	    }
     	    /*try
     	    {
     	        compilerId = (String) helper.evaluate("maven.compiler.compilerId");
@@ -106,7 +106,7 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
 	    final Log log = helper.getLog();
 
         log.debug( "Using compiler id'" + getCompilerId() + "'." );
-        
+
         try
         {
             getCompilerManager().getCompiler( getCompilerId() );
@@ -115,7 +115,7 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
         {
             throw new EnforcerRuleException( "No compiler with id: '" + e.getCompilerId() + "'." );
         }
-        
+
         try
         {
             Toolchain tc = findToolChain("jdk", helper, null);
@@ -125,44 +125,44 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
         	    if (null != executable)
         	    {
         	    	executable = executable + getExecutableExtension();
-        	    }        	    
+        	    }
             }
         }
         catch (MojoExecutionException e)
         {
         	throw new EnforcerRuleException("", e);
         }
-        
+
         if (null == executable && isFallBackAllowed())
         {
-        	executable = findToolExecutable(getCompilerId() + getExecutableExtension(), log, "java.home", 
+        	executable = findToolExecutable(getCompilerId() + getExecutableExtension(), log, "java.home",
         			new String [] { "../bin", "bin", "../sh" },
         			new String [] { "JDK_HOME", "JAVA_HOME" }, new String[] { "bin", "sh" }
         	    );
         }
-        
+
         if (null == executable || "".equals(executable.trim()))
         {
-            throw new EnforcerRuleException("No valid executable found, aborting");	
+            throw new EnforcerRuleException("No valid executable found, aborting");
         } else {
-        	File toolCmd = new File(executable);        	
+        	File toolCmd = new File(executable);
         	if (!(toolCmd.isFile() && toolCmd.exists()))
         	{
         		throw new EnforcerRuleException("Tool '" + executable + "' is not a valid executable command");
         	}
         }
         java_version = runToolAndGetVersion(executable, log);
-                
-	    java_version = normalizeJDKVersion( java_version );
-	    log.debug( "Normalized Java Version: " + java_version );
+
+	String clean_java_version = normalizeJDKVersion( java_version );
+	    log.debug( "Normalized Java Version: " + clean_java_version );
 	
-	    ArtifactVersion detectedJdkVersion = new DefaultArtifactVersion(java_version );
+	    ArtifactVersion detectedJdkVersion = new DefaultArtifactVersion(clean_java_version );
 	    log.debug( "Parsed Version: Major: " + detectedJdkVersion.getMajorVersion() + " Minor: "
 	        + detectedJdkVersion.getMinorVersion() + " Incremental: " + detectedJdkVersion.getIncrementalVersion()
 	        + " Build: " + detectedJdkVersion.getBuildNumber() + "Qualifier: " + detectedJdkVersion.getQualifier() );
 	
-	    log.debug("Tool " + executable + ", provides: " + detectedJdkVersion + ", require: " + version);
-	    enforceVersion( helper.getLog(), "JDK", getVersion()tectedJdkVersion );
+	    log.debug("Rule requires: " + version);
+	    enforceVersion( helper.getLog(), "JDK", getVersion(), detectedJdkVersion );
     } 
 
 	/**
@@ -207,15 +207,15 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
     {
         Commandline cmdLine = new Commandline();
         cmdLine.setExecutable(executable);
-        
+
         cmdLine.createArg().setValue(getCompilerArgument());
-               
+
         InputStream in = new InputStream() {
         	public int read() {
         		return -1;
         	}
         };
-        
+
         StreamConsumer out = new StreamConsumer() {
 			
 			public void consumeLine(String line) {
@@ -224,12 +224,12 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
 		};
 
 		final StringBuilder firstLine = new StringBuilder();
-		
+
         StreamConsumer err = new StreamConsumer() {
-		
+
         	boolean foundFirstLine = true;
 			public void consumeLine(String line) {
-				if (foundFirstLine) {				
+				if (foundFirstLine) {
 				    firstLine.append(line);
 					foundFirstLine = !foundFirstLine;
 				}
@@ -244,7 +244,7 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
         {
         	throw new EnforcerRuleException("Error executing: " + cmdLine, e);
         }
-        
+
         String [] output = firstLine.toString().split("\\s");
         if (output.length > 1)
         {
@@ -258,18 +258,18 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
     {
         return compilerArgument;
     }
-       
+
     private CompilerManager getCompilerManager()
     {
     	return compilerManager;
     }
-    
+
     private String getCompilerId()
     {
     	return compilerId;
     }
-    
+
     private boolean isFallBackAllowed() {
     	return isFallBackAllowed;
-    }    
+    }
 }
