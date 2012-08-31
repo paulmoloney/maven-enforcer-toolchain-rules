@@ -20,7 +20,6 @@ package com.github.paulmoloney.maven.plugins.enforcer;
  */
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -38,10 +37,9 @@ import org.codehaus.plexus.compiler.manager.NoSuchCompilerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.util.StringUtils;
 
-import org.codehaus.plexus.util.cli.CommandLineException;
-import org.codehaus.plexus.util.cli.CommandLineUtils;
-import org.codehaus.plexus.util.cli.Commandline;
-import org.codehaus.plexus.util.cli.StreamConsumer;
+import com.github.paulmoloney.maven.plugins.utils.DefaultProcessExecutor;
+import com.github.paulmoloney.maven.plugins.utils.ProcessExecutor;
+import com.github.paulmoloney.maven.plugins.utils.ProcessExecutorException;
 
 /** This rule checks that the Java compiler version matched in toolchains.xml is allowed.
  * @author <a href="mailto:">Paul Moloney</a>
@@ -65,6 +63,8 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
     @Parameter (defaultValue = "true")
     private boolean isFallBackAllowed;
 
+    private ProcessExecutor process;
+    
 	/** 
 	* This particular rule determines if the specified Java compiler version referenced in the toolchains.xml is an appropriate version
 	* @see org.apache.maven.enforcer.rule.api.EnforcerRule&#execute(org.apache.maven.enforcer.rule.api.EnforcerRuleHelper)
@@ -144,16 +144,11 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
         if (null == executable || "".equals(executable.trim()))
         {
             throw new EnforcerRuleException("No valid executable found, aborting");
-        } else {
-        	File toolCmd = new File(executable);
-        	if (!(toolCmd.isFile() && toolCmd.exists()))
-        	{
-        		throw new EnforcerRuleException("Tool '" + executable + "' is not a valid executable command");
-        	}
         }
-        java_version = runToolAndGetVersion(executable, log);
+    
+        java_version = runToolAndRetrieveVersion(process, log);
 
-	String clean_java_version = normalizeJDKVersion( java_version );
+	    String clean_java_version = normalizeJDKVersion( java_version );
 	    log.debug( "Normalized Java Version: " + clean_java_version );
 	
 	    ArtifactVersion detectedJdkVersion = new DefaultArtifactVersion(clean_java_version );
@@ -162,7 +157,7 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
 	        + " Build: " + detectedJdkVersion.getBuildNumber() + "Qualifier: " + detectedJdkVersion.getQualifier() );
 	
 	    log.debug("Rule requires: " + version);
-	    enforceVersion( helper.getLog(), "JDK", getVersion(), detectedJdkVersion );
+	    enforceVersion( log, "JDK", getVersion(), detectedJdkVersion );
     } 
 
 	/**
@@ -198,60 +193,28 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
 
     /**
      * Runs the specified java compiler to find out its version
-     * @param executable to run
+     * @param process to run
      * @param log to write to
      * @return the version of specified executable
      * @throws EnforcerRuleException if version can not be determined
      */
-    private String runToolAndGetVersion(String executable, final Log log) throws EnforcerRuleException
+    private String runToolAndRetrieveVersion(ProcessExecutor process, final Log log) throws EnforcerRuleException
     {
-        Commandline cmdLine = new Commandline();
-        cmdLine.setExecutable(executable);
+        try {    	
+    	    String firstLine = process.runApplication();
 
-        cmdLine.createArg().setValue(getCompilerArgument());
-
-        InputStream in = new InputStream() {
-        	public int read() {
-        		return -1;
-        	}
-        };
-
-        StreamConsumer out = new StreamConsumer() {
-			
-			public void consumeLine(String line) {
-				//log.info(line);
-			}
-		};
-
-		final StringBuilder firstLine = new StringBuilder();
-
-        StreamConsumer err = new StreamConsumer() {
-
-        	boolean foundFirstLine = true;
-			public void consumeLine(String line) {
-				if (foundFirstLine) {
-				    firstLine.append(line);
-					foundFirstLine = !foundFirstLine;
-				}
-			}
-		};
-		
-        try
-        {
-            CommandLineUtils.executeCommandLine(cmdLine, in, out, err);
+            String [] output = firstLine.split("\\s");
+            if (output.length > 1)
+            {
+        	    log.debug(executable + " version: " + output[1]);
+        	    return output[1];
+            }
+            throw new EnforcerRuleException("No valid version could be determined for " + process.toString());
         }
-        catch (CommandLineException e)
+        catch (ProcessExecutorException e)
         {
-        	throw new EnforcerRuleException("Error executing: " + cmdLine, e);
+        	throw new EnforcerRuleException("Error determining version", e);
         }
-
-        String [] output = firstLine.toString().split("\\s");
-        if (output.length > 1)
-        {
-        	log.debug(executable + " version: " + output[1]);
-        	return output[1];
-        }
-        throw new EnforcerRuleException("No valid version could be determined for " + cmdLine);
     }
 
     private String getCompilerArgument()
@@ -271,5 +234,24 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
 
     private boolean isFallBackAllowed() {
     	return isFallBackAllowed;
+    }
+    
+    protected void setCompilerId(String compilerId) {
+    	if (null == compilerId || "".equals(compilerId.trim())) {
+    		throw new IllegalArgumentException("CompilerId cannot be null or empty");
+    	}
+    	this.compilerId = compilerId;
+    }
+    
+    protected void setProcess(ProcessExecutor process)
+    {
+    	if (null != process)
+    	{
+    	    this.process = process;	
+    	}
+    	else
+    	{
+    	    this.process = new DefaultProcessExecutor().createExecutor(executable, getCompilerArgument());
+    	}
     }
 }

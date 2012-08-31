@@ -150,7 +150,7 @@ public abstract class AbstractToolChainAwareRule extends AbstractVersionEnforcer
      * @param messages
      * @return the long or full error message
      */
-    public String longMessage( List<CompilerError> messages )
+    protected String longMessage( List<CompilerError> messages )
     {
         StringBuilder sb = new StringBuilder();
 
@@ -170,7 +170,7 @@ public abstract class AbstractToolChainAwareRule extends AbstractVersionEnforcer
      * @param messages
      * @return the short error message 
      */
-    public String shortMessage( List<CompilerError> messages )
+    protected String shortMessage( List<CompilerError> messages )
     {
         StringBuffer sb = new StringBuffer();
 

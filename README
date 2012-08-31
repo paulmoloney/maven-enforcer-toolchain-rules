@@ -28,6 +28,17 @@ This rule requires a valid toolchains.xml in your ~/.m2 folder e.g.
           <jdkHome>/opt/shared/java/jdk1.6</jdkHome>
        </configuration>
     </toolchain>
+    <toolchain>
+       <type>jdk</type>
+       <provides>
+           <version>1.7</version>
+           <vendor>sun</vendor>
+           <id>1.7</id>
+       </provides>
+       <configuration>
+          <jdkHome>/opt/shared/java/jdk1.7</jdkHome>
+       </configuration>
+    </toolchain>
 </toolchains>
 
 
@@ -61,7 +72,7 @@ Sample usage in a project pom.xml is illustrated below
               <version>${enforcer_plugin_version}</version>
                   <dependencies>
                     <dependency>
-                        <groupId>ie.pmoloney</groupId>
+                        <groupId>com.github.paulmoloney</groupId>
                         <artifactId>maven-enforcer-toolchain-rules</artifactId>
                         <version>1.0.1</version> 
                     </dependency>
