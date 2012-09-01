@@ -19,7 +19,6 @@ package com.github.paulmoloney.maven.plugins.enforcer;
  * under the License.
  */
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -253,5 +252,10 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
     	{
     	    this.process = new DefaultProcessExecutor().createExecutor(executable, getCompilerArgument());
     	}
+    }
+    
+    protected void setFallback(boolean isFallBackAllowed)
+    {
+    	this.isFallBackAllowed = isFallBackAllowed;
     }
 }

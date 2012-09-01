@@ -211,19 +211,20 @@ public abstract class AbstractToolChainAwareRule extends AbstractVersionEnforcer
     protected String findToolExecutable(String tool, Log log, String sysProperty, String[] subDirs1, String [] envArgs, String [] subDirs2)
     {
     	log.warn("Falling back to env lookup for specified tool");
-        Properties env = new Properties();
-        env.putAll(getSession().getSystemProperties());
-        env.putAll(getSession().getUserProperties());
 
         String command = tool;
         try {
+            Properties env = new Properties();
+            env.putAll(getSession().getSystemProperties());
+            env.putAll(getSession().getUserProperties());
+            int envLen = null != env ? envArgs.length : 0;
         	command = findExecutable( tool, env.getProperty( sysProperty ), subDirs1 );
 	
 	        if ( command == null )
 	        {
 	            if (null != envArgs)
 	            {
-	                for ( int i = 0; i < envArgs.length && executable == null; i++ )
+	                for ( int i = 0; i < envLen && executable == null; i++ )
 	                {
 	                	command =
 	                        findExecutable( tool, env.getProperty( envArgs[i] ), subDirs2 );
@@ -233,12 +234,12 @@ public abstract class AbstractToolChainAwareRule extends AbstractVersionEnforcer
 	                }
 	            }
 	        }
+	        log.warn("Using executable: " + command);    
         }
         catch (IOException e) {
         	log.error("Unable to find executable", e);
         }
-
-        log.warn("Using executable: " + command);
+        
         return command;
     }
 

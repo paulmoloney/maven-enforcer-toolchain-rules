@@ -19,6 +19,8 @@ package com.github.paulmoloney.maven.plugins.enforcer;
  * under the License.
  */
 
+import java.util.Properties;
+
 import org.apache.maven.enforcer.rule.api.EnforcerRuleException;
 import org.apache.maven.enforcer.rule.api.EnforcerRuleHelper;
 import org.apache.maven.execution.MavenSession;
@@ -29,13 +31,14 @@ import org.codehaus.plexus.compiler.manager.CompilerManager;
 import org.codehaus.plexus.compiler.Compiler;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.paulmoloney.maven.plugins.utils.ProcessExecutor;
 
 import static org.junit.Assert.*;
-import org.junit.matchers.*;
 import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.*;
 
 /**
  * @author Paul Moloney
@@ -73,7 +76,7 @@ public class RuleJavaVersionToolchainAwareTest
 	}
 	
 	@Test
-	public void testFoundGoodToolChain() throws Exception
+	public void testFoundExactMatchToolChain() throws Exception
 	{		
 		when(helper.getComponent(ToolchainManager.class)).thenReturn(tcManager);
 		when(helper.evaluate("${project.build.outputDirectory}")).thenReturn("");
@@ -106,7 +109,7 @@ public class RuleJavaVersionToolchainAwareTest
 		verify(toolChain).findTool("javac");
 	}
 	
-	@Test()
+	@Test
 	public void testFoundOutOfDateToolChain() throws Exception
 	{		
 		when(helper.getComponent(ToolchainManager.class)).thenReturn(tcManager);
@@ -127,12 +130,13 @@ public class RuleJavaVersionToolchainAwareTest
 		rule.setVersion("1.5.0-22");
 		rule.setProcess(process);
 		String ruleFailureMessage = null;
-		try {
+		try
+		{
 		    rule.execute(helper);
 		}
 		catch (EnforcerRuleException e) {
 			ruleFailureMessage = e.getMessage();
-			//assertThat(is("Detected JDK Version: 1.5.0-1 is not in the allowed range 1.5.0-22."), matches(ruleFailureMessage));
+			assertThat(ruleFailureMessage, is("Detected JDK Version: 1.5.0-1 is not in the allowed range 1.5.0-22."));
 		}
 		
 		verify(helper).getComponent(ToolchainManager.class);
@@ -145,7 +149,90 @@ public class RuleJavaVersionToolchainAwareTest
 		
 		verify(helper, times(2)).getLog();
 		verify(toolChain).findTool("javac");
-		//fail("Expected to fail with message " + ruleFailureMessage);
+	}
+
+	@Test
+	public void testFoundNewerToolChain() throws Exception
+	{		
+		when(helper.getComponent(ToolchainManager.class)).thenReturn(tcManager);
+		when(helper.evaluate("${project.build.outputDirectory}")).thenReturn("");
+		when(helper.evaluate("${basedir}")).thenReturn("");
+		when(helper.getComponent(CompilerManager.class)).thenReturn(manager);
+		when(helper.evaluate("${session}")).thenReturn(session);
+		when(helper.getLog()).thenReturn(log);
+		when(tcManager.getToolchainFromBuildContext("jdk", session)).thenReturn(toolChain);
+		String executable = "/opt/javac";
+		String compilerId = "javac";
+		when(toolChain.findTool(compilerId)).thenReturn(executable);
+		when(process.runApplication()).thenReturn("javac 1.6.0_01");
+		when(manager.getCompiler(compilerId)).thenReturn(compiler);
+				
+		RuleJavaVersionToolchainAware rule = new RuleJavaVersionToolchainAware();
+		rule.setCompilerId(compilerId);
+		rule.setVersion("1.5.0-22");
+		rule.setProcess(process);
+		String ruleFailureMessage = null;
+		try
+		{
+		    rule.execute(helper);
+		}
+		catch (EnforcerRuleException e) {
+			ruleFailureMessage = e.getMessage();
+			assertThat(ruleFailureMessage, is("Detected JDK Version: 1.5.0-1 is not in the allowed range 1.5.0-22."));
+		}
+		
+		verify(helper).getComponent(ToolchainManager.class);
+		verify(helper).evaluate("${project.build.outputDirectory}");
+		verify(helper).evaluate("${basedir}");		
+		verify(helper).getComponent(CompilerManager.class);
+		verify(helper).evaluate("${session}");
+		verify(tcManager).getToolchainFromBuildContext("jdk", session);
+		verify(manager).getCompiler(compilerId);
+		
+		verify(helper, times(2)).getLog();
+		verify(toolChain).findTool("javac");
 	}
 	
+	@Test
+	public void testNoValidExecutableFound() throws Exception
+	{		
+		when(helper.getComponent(ToolchainManager.class)).thenReturn(tcManager);
+		when(helper.evaluate("${project.build.outputDirectory}")).thenReturn("");
+		when(helper.evaluate("${basedir}")).thenReturn("");
+		when(helper.getComponent(CompilerManager.class)).thenReturn(manager);
+		when(helper.evaluate("${session}")).thenReturn(session);
+		when(helper.getLog()).thenReturn(log);
+		when(tcManager.getToolchainFromBuildContext("jdk", session)).thenReturn(null);
+		String compilerId = "javac";
+		when(manager.getCompiler(compilerId)).thenReturn(compiler);
+		when(session.getSystemProperties()).thenReturn(new Properties());
+		when(session.getUserProperties()).thenReturn(new Properties());
+		
+		RuleJavaVersionToolchainAware rule = new RuleJavaVersionToolchainAware();
+		rule.setCompilerId(compilerId);
+		rule.setVersion("1.5.0-22");
+		rule.setProcess(process);
+		rule.setFallback(true);
+		String ruleFailureMessage = null;
+		try
+		{
+		    rule.execute(helper);
+		}
+		catch (EnforcerRuleException e) {
+			ruleFailureMessage = e.getMessage();
+			assertThat(ruleFailureMessage, is("No valid executable found, aborting"));
+		}
+		
+		verify(helper).getComponent(ToolchainManager.class);
+		verify(helper).evaluate("${project.build.outputDirectory}");
+		verify(helper).evaluate("${basedir}");		
+		verify(helper).getComponent(CompilerManager.class);
+		verify(helper).evaluate("${session}");
+		verify(tcManager).getToolchainFromBuildContext("jdk", session);
+		verify(manager).getCompiler(compilerId);
+		
+		verify(helper, times(2)).getLog();
+		verify(session).getSystemProperties();
+		verify(session).getUserProperties();
+	}	
 }
