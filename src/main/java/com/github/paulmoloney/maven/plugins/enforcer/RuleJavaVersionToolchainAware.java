@@ -144,7 +144,7 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
         {
             throw new EnforcerRuleException("No valid executable found, aborting");
         }
-    
+        setProcess(process);
         java_version = runToolAndRetrieveVersion(process, log);
 
 	    String clean_java_version = normalizeJDKVersion( java_version );
