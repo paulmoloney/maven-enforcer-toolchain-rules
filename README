@@ -89,8 +89,7 @@ Sample usage in a project pom.xml is illustrated below
                            <rules>
                                <!-- Since this rule is not in the org.apache.maven.plugins.enforcer
                                     package one requires the implementation attribute -->
-                               <implementation="com.github.paulmoloney.maven.plugins.enforcer.RuleJavaVersionToolchainAware">
-                               <ruleJavaVersionToolchainAware> 
+                               <ruleJavaVersionToolchainAware implementation="com.github.paulmoloney.maven.plugins.enforcer.RuleJavaVersionToolchainAware">
                                    <version>[1.6.0-30,)</version>
                                </ruleJavaVersionToolchainAware>
                            </rules>
