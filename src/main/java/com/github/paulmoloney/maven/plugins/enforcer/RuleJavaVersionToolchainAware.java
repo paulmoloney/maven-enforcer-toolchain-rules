@@ -121,10 +121,10 @@ public class RuleJavaVersionToolchainAware extends AbstractToolChainAwareRule {
             if (tc != null)
             {
         	    executable = tc.findTool( getCompilerId() );
-        	    if (null != executable)
-        	    {
-        	    	executable = executable + getExecutableExtension();
-        	    }
+//        	    if (null != executable)
+//        	    {
+//        	    	executable = executable + getExecutableExtension();
+//        	    }
             }
         }
         catch (MojoExecutionException e)
