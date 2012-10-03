@@ -327,7 +327,6 @@
   </issueManagement>
       
   <scm>
-      <!--connection>scm:git:git://github.com/paulmoloney/maven-enforcer-toolchain-rules.git</connection>
       <developerConnection>scm:git:git@github.com:paulmoloney/maven-enforcer-toolchain-rules.git</developerConnection>
       <url>https://github.com/paulmoloney/maven-enforcer-toolchain-rules/tree/master/</url-->
       <connection>scm:git:ssh://github.com/${owner}/${project.artifactId}.git</connection>
@@ -339,7 +338,6 @@
   <distributionManagement>
       <site>
           <id>github-site</id>
-          <!--url>gitsite:git://github.com/paulmoloney/maven-enforcer-toolchain-rules.git</url-->
           <url>${site_deploy_url}/${project.artifactId}.git</url>
       </site>
     </distributionManagement>
@@ -451,3 +449,4 @@
         </profile>
   </profiles>
 </project>
+
