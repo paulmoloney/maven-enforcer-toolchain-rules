@@ -8,7 +8,7 @@
   </parent>  
     
   <artifactId>maven-enforcer-toolchain-rules</artifactId>
-  <version>1.0.4-SNAPSHOT</version>
+  <version>1.0.4</version>
   <packaging>jar</packaging>
 
   <name>maven-enforcer-toolchain-rules</name>
@@ -332,7 +332,7 @@
       <connection>scm:git:ssh://github.com/${owner}/${project.artifactId}.git</connection>
       <developerConnection>scm:git:ssh://git@github.com/${owner}/${project.artifactId}.git</developerConnection>
       <url>https://github.com/${owner}/${project.artifactId}/tree/master/</url>
-      <tag>HEAD</tag>
+      <tag>maven-enforcer-toolchain-rules-1.0.4</tag>
   </scm>
     
   <distributionManagement>
