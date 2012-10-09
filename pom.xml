@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.github.paulmoloney</groupId>
     <artifactId>top-level-parent-pom</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.13</version>
   </parent>  
     
   <artifactId>maven-enforcer-toolchain-rules</artifactId>
@@ -327,7 +327,7 @@
   </issueManagement>
       
   <scm>
-      <developerConnection>scm:git:git@github.com:paulmoloney/maven-enforcer-toolchain-rules.git</developerConnection>
+      <!--developerConnection>scm:git:git@github.com:paulmoloney/maven-enforcer-toolchain-rules.git</developerConnection>
       <url>https://github.com/paulmoloney/maven-enforcer-toolchain-rules/tree/master/</url-->
       <connection>scm:git:ssh://github.com/${owner}/${project.artifactId}.git</connection>
       <developerConnection>scm:git:ssh://git@github.com/${owner}/${project.artifactId}.git</developerConnection>
