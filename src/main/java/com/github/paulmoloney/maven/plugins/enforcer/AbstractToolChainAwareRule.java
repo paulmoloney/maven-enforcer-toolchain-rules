@@ -72,11 +72,23 @@ public abstract class AbstractToolChainAwareRule extends AbstractVersionEnforcer
 
     protected void init(EnforcerRuleHelper helper) throws EnforcerRuleException, MojoExecutionException
     {
-    	final String version = getVersion(); 
-    	if (null == version || "".equals(version.trim()))
+    	final String aVersion = getVersion(); 
+    	if (null == aVersion || "".equals(aVersion.trim()))
     	{
     		throw new MojoExecutionException("Version parameter was not supplied for rule usage");
     	}
+        String version = aVersion;
+        try
+        {
+            if (-1 != version.indexOf("${"))
+            {
+                version = (String) helper.evaluate(aVersion);
+            }
+        }
+        catch (ExpressionEvaluationException e)
+        {
+                throw new MojoExecutionException("Unable to evaluate version " + aVersion, e);
+        }
     	try
     	{
     	    VersionRange.createFromVersionSpec( version );
